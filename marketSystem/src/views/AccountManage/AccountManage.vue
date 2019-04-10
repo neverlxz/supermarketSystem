@@ -21,20 +21,26 @@
                     <el-table-column
                     prop="account"
                     label="账号"
-                    width="240">
+                    width="200">
+                    </el-table-column>
+
+                      <el-table-column
+                    prop="password"
+                    label="密码"
+                    width="200">
                     </el-table-column>
 
                     <el-table-column
-                    prop="userGroup"
+                    prop="user_group"
                     label="用户组"
-                    width="240"
+                    width="200"
                     >
                     </el-table-column>
 
                     <el-table-column
                     label="日期"
-                    width="240">
-                    <template slot-scope="scope">{{ scope.row.createDate }}</template>
+                    width="200">
+                   <template slot-scope="scope">{{ scope.row.create_date | filterDate}}</template>
                     </el-table-column>
 
                      <el-table-column label="操作" show-overflow-tooltip>
@@ -73,35 +79,13 @@
     </div>
 </template>
 <script>
+// 引入moment
+import moment from 'moment';
 export default {
     data(){
         return {
             tableData:[
-                {
-                    account: '小龙虾',
-                    userGroup: '超级管理员',
-                    createDate: '2019-04-08'
-                },
-                {
-                    account: '李二狗',
-                    userGroup: '超级管理员',
-                    createDate: '2019-04-08'
-                },
-                 {
-                    account: '小龙虾',
-                    userGroup: '超级管理员',
-                    createDate: '2019-04-08'
-                },
-                 {
-                    account: '小龙虾',
-                    userGroup: '超级管理员',
-                    createDate: '2019-04-08'
-                },
-                 {
-                    account: '小龙虾',
-                    userGroup: '超级管理员',
-                    createDate: '2019-04-08'
-                }
+        
             ],
         currentPage:1,
         total:20
@@ -126,7 +110,24 @@ export default {
         handleCurrentChange(){
 
         }
+    },
+    //生命周期 钩子函数
+    created(){
+        this.request.get('/account/accountlist')
+        .then(res=>{
+            console.log(res);
+            this.tableData= res;
+        })
+        .catch(err=>{
+            console.log(err)
+        })
+    },
+    filters: {
+    // 过滤时间
+    filterDate (time) {
+      return moment(time).format('YYYY-MM-DD hh:mm:ss')
     }
+  }
     
 }
 </script>

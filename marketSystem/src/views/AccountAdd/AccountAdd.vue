@@ -22,7 +22,7 @@
                 </el-form-item>
                 <!-- 用户组选择 -->
                 <el-form-item label="级别分类" prop="userGroup">
-                    <el-select  class="selectbox" v-model="addForm.userGroup" placeholder="请选择用户组">
+                    <el-select  class="selectbox" v-model="addForm.user_group" placeholder="请选择用户组">
                         <el-option label="超级管理员" value="超级管理员"></el-option>
                         <el-option label="普通用户" value="普通用户"></el-option> 
                     </el-select>       
@@ -74,7 +74,7 @@ export default {
                 account:"",
                 password:"",
                 checkPass:"",
-                userGroup:""    
+                user_group:""    
             },       
             rules:{
                 account:[
@@ -88,7 +88,7 @@ export default {
                 checkPass:[
                     {required:true,validator:checkPassword,trigger:"blur"}
                 ],
-                userGroup:[
+                user_group:[
                     {required:true,message:"用户组为必选项",trigger:"change"},
                 ]
 
@@ -101,14 +101,24 @@ export default {
             this.$refs.addForm.validate(valid=>{
                 if(valid){
                     let params={
-                        account:this.account,
-                        password:this.password,
-                        userGroup:this.userGroup
-                    }
-                    alert("账号添加成功");
+                        account:this.addForm.account,
+                        password:this.addForm.password,
+                        user_group:this.addForm.user_group
+                    }            
+                    console.log(params)       
+                        //发送axios请求
+                        this.request.post("/account/accountadd",params)
+                        .then(res=>{
+                            console.log(res)
+                        })
+                        .catch(err=>{
+                            console.log(err);
+                        })
                     this.$router.push("/home/accountmanage"); //跳转
                 }
             })
+                    alert("账号添加成功");
+
         }
     }
     
