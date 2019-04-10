@@ -7,28 +7,26 @@
 
         <div class="formBox">
         <!-- 表单框 -->
-            <el-form :model="loginForm" status-icon :rules="rules" ref="loginForm" label-width="100px" class="demo-ruleForm">
+            <el-form :model="addForm" status-icon :rules="rules" ref="addForm" label-width="100px" class="demo-ruleForm">
 
                 <el-form-item label="账   号" prop="account">
-                    <el-input type="text" v-model="loginForm.account" autocomplete="off"></el-input>
+                    <el-input type="text" v-model="addForm.account" autocomplete="off"></el-input>
                 </el-form-item>
 
                 <el-form-item label="密   码" prop="password">
-                    <el-input type="password" v-model="loginForm.password" autocomplete="off"></el-input>
+                    <el-input type="password" v-model="addForm.password" autocomplete="off"></el-input>
                 </el-form-item>
 
                 <el-form-item label="确认密码" prop="checkPass">
-                    <el-input type="password" v-model="loginForm.checkPass" autocomplete="off"></el-input>
+                    <el-input type="password" v-model="addForm.checkPass" autocomplete="off"></el-input>
                 </el-form-item>
                 <!-- 用户组选择 -->
-                  <el-select label="级别分类" v-model="loginForm.value" placeholder="请选择用户组">
-                    <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                    </el-option>
-                </el-select>
+                <el-form-item label="级别分类" prop="userGroup">
+                    <el-select  class="selectbox" v-model="addForm.userGroup" placeholder="请选择用户组">
+                        <el-option label="超级管理员" value="超级管理员"></el-option>
+                        <el-option label="普通用户" value="普通用户"></el-option> 
+                    </el-select>       
+                </el-form-item>
 
 
                 <el-form-item>
@@ -43,41 +41,74 @@
     </div>
 </template>
 <script>
+
+import {passwordReg} from "@/utils/validator.js"
 export default {
     data(){
+        //验证密码函数
+        const confirmPassword=(rule,value,callback)=>{
+           if(value===""){
+               callback(new Error("密码不能为空"));
+           }else if(!passwordReg(value)){
+               callback(new Error("密码位3~6位 以字母开头"));
+           }else{
+               if(this.addForm.checkPass!==""){
+                   //触发一致性验证
+                   this.$refs.addForm.validateField("checkPass");
+               }
+               callback();
+           }
+        }
+        //确认密码函数
+        const checkPassword=(rulr,value,callback)=>{
+            if(value===""){
+                callback(new Error("请确认您设置的密码"));
+            }else if(value !== this.addForm.password){
+                callback(new Error("两次密码不一致"));
+            }else{
+                callback();
+            }
+        }
         return {
-            loginForm:{
+            addForm:{
                 account:"",
                 password:"",
-                checkPass:""
-                
-            },
-            options:[
-                {
-                    label:"超级管理员",
-                    value:"超级管理员"
-                },
-                {
-                    label:"普通管理员",
-                    value:"普通管理员"
-                }
-            ],
+                checkPass:"",
+                userGroup:""    
+            },       
             rules:{
                 account:[
-                    {}
+                    {required:true,message:"请输入账号",trigger:"blur"},
+                    {min:3,max:6,message:"请输入3~6位的账号哟"}
                 ],
-                password:[{
+                password:[
+                    {required:true,message:"请输入密码",trigger:"blur"},
+                    {required:true,validator:confirmPassword,trigger:"blur"}
+                ],
+                checkPass:[
+                    {required:true,validator:checkPassword,trigger:"blur"}
+                ],
+                userGroup:[
+                    {required:true,message:"用户组为必选项",trigger:"change"},
+                ]
 
-                }],
-                checkPass:[{
-
-                }]
             }
         }
     },
     methods:{
         submitForm(){
-
+            //前端验证都通过
+            this.$refs.addForm.validate(valid=>{
+                if(valid){
+                    let params={
+                        account:this.account,
+                        password:this.password,
+                        userGroup:this.userGroup
+                    }
+                    alert("账号添加成功");
+                    this.$router.push("/home/accountmanage"); //跳转
+                }
+            })
         }
     }
     
