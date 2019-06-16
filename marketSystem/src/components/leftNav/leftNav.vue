@@ -14,6 +14,7 @@
                 <template slot="title">
                     <i class="el-icon-message"></i>
                    系统管理sss我在改第二此
+                   系统管理sss我在改一次
                 </template>  
                 <el-menu-item index="/home/systeminfo">系统信息</el-menu-item>   
             </el-submenu>
