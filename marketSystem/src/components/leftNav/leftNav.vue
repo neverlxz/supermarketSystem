@@ -13,7 +13,7 @@
             <el-submenu index="1">
                 <template slot="title">
                     <i class="el-icon-message"></i>
-                   系统管理sss
+                   系统管理sss我在改第二此
                 </template>  
                 <el-menu-item index="/home/systeminfo">系统信息</el-menu-item>   
             </el-submenu>
